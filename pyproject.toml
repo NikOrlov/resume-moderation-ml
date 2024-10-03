@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "resume-moderaion-ml"
+version = '1.0.1'
+description = ""
+authors = ["n.orlov <n.orlov@hh.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "~3.11"
+mlback = {git = "ssh://git@github.com/hhru/mlback", tag = "1.1.16", extras=["all"]}
+scikit-learn = "1.1.3"
+pandas = "1.5.3"
+tqdm = "^4.66.5"
+lightgbm = "4.5.0"
+pyarrow = "^17.0.0"
+eli5 = "^0.13.0"
+numpy = ">=1.23.0,<1.24.0"
+ruff = "^0.6.4"
+ml-tools = {git = "ssh://git@github.com/hhru/ml-tools", tag = "0.1.6"}
+nltk = "^3.9.1"
+ciso8601 = "^2.3.1"
+xgboost = "1.2.0"
+hyperopt = "0.1.1" # В этой версии в качестве пиклера импортируется dill, dill способен сериализовать наш кардинал. В других версиях гиперопта могут использоваться другие пиклеры. Подробнее в комментах к порфелю PORTFOLIO-18408
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.2"
+pytest-asyncio = '0.21.1'
+
+[tool.pytest.ini_options]
+addopts = '''
+  --tb native
+  --asyncio-mode=auto
+  -p no:warnings
+'''
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+exclude = ["resume_moderation_ml/version.py"]
