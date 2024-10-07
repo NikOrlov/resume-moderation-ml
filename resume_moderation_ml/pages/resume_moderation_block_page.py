@@ -2,7 +2,7 @@ from frontik.handler import PageHandler, router
 from tornado.web import HTTPError
 
 
-class ResumeModerationPage(PageHandler):
+class ResumeModerationBlockPage(PageHandler):
     @router.post()
     async def post_page(self) -> None:
         try:
@@ -13,9 +13,9 @@ class ResumeModerationPage(PageHandler):
             raise HTTPError(400, err_msg)
 
         try:
-            decision = self.application.predictor.make_decision(resume)
+            decision = self.application.predictor.make_block_decision(resume)
         except Exception as e:
-            err_msg = f"Error while prediction: {e}"
+            err_msg = f"Error while predicting: {e}"
             self.log(err_msg)
             raise HTTPError(400, err_msg)
         return decision
