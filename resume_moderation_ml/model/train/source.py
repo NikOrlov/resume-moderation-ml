@@ -14,26 +14,29 @@ from sklearn.model_selection import train_test_split
 from resume_moderation_ml.model.train.config import ModerationConfig
 from resume_moderation_ml.model.train.environment import init_train_env
 from resume_moderation_ml.model.train.targets import ModerationTargets
-from hhkardinal.train import cache
+from resume_moderation_ml.model.train.utils.cache import Cache
 from resume_moderation_ml.model.train import iterate_file_lines
+from ml_tools.kardinal_tools.state import State
+
 
 logger = logging.getLogger(__name__)
 
 csv.field_size_limit(sys.maxsize)
 
 config = ModerationConfig()
-
+state = State(config)
+cache = Cache(state)
 _SOURCE_RESUME_CSV_FILES_FROM_HIVE = {
-    'all': 'hhkardinal/moderation/resume/train/data/resume_from_hive.csv',
-    'main': 'hhkardinal/moderation/resume/train/data/resume_from_hive_main.csv',
-    'vectorizer': 'hhkardinal/moderation/resume/train/data/resume_from_hive_vectorizer.csv'
+    'all': 'resume_moderation_ml/model/train/data/resume_from_hive.csv',
+    'main': 'resume_moderation_ml/model/train/data/resume_from_hive_main.csv',
+    'vectorizer': 'resume_moderation_ml/model/train/data/resume_from_hive_vectorizer.csv'
 }
 
-_SOURCE_DELETED_RESUME_CSV_FILE_FROM_DB = 'hhkardinal/moderation/resume/train/data/resume_deleted_from_db.csv'
-_RAW_RESUMES_KEYS = {'main': 'moderation/resume/raw_resumes',
-                     'vectorizer': 'moderation/resume/vectorizer_resumes'}
-_TARGETS_KEYS = {'main': 'moderation/resume/targets',
-                 'vectorizer': 'moderation/resume/vectorizer_targets'}
+_SOURCE_DELETED_RESUME_CSV_FILE_FROM_DB = 'resume_moderation_ml/model/train/data/resume_deleted_from_db.csv'
+_RAW_RESUMES_KEYS = {'main': 'resume_moderation_ml/model/train/raw_resumes',
+                     'vectorizer': 'resume_moderation_ml/model/train/vectorizer_resumes'}
+_TARGETS_KEYS = {'main': 'resume_moderation_ml/model/train/targets',
+                 'vectorizer': 'resume_moderation_ml/model/train/vectorizer_targets'}
 
 
 # This function is a hack for obtaining a lines of source moderation records csv file, it should be replaced with hdfs
@@ -176,7 +179,6 @@ def split_main_vectorizer():
 
 
 if __name__ == '__main__':
-    init_train_env()
     split_main_vectorizer()
     get_raw_resumes_and_targets(dataset='main')
     get_raw_resumes_and_targets(dataset='vectorizer')
