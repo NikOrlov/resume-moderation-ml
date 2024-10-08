@@ -14,7 +14,7 @@ from resume_moderation_ml.model.resume import (
 from resume_moderation_ml.model.train import bad_positions, source
 from resume_moderation_ml.model.train.environment import init_train_env
 from resume_moderation_ml.model.train.vocabulary import get_vocabularies
-from hhkardinal.train import cache
+from resume_moderation_ml.model.train import cache_obj
 from hhkardinal.train.data_fetcher import load_currency_rates
 from hhkardinal.transformers.common import (
     CategoricalEncoder, ClassifierTransformer, InputLength, LogTransformer, ValueExtractor,

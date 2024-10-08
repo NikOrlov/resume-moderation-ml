@@ -7,10 +7,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.utils.validation import check_random_state
 
-from resume_moderation_ml.model.train.config import ModerationConfig
-from resume_moderation_ml.model.train.environment import init_train_env
+from resume_moderation_ml.model.train import config, cache_obj
 from resume_moderation_ml.model.train.source import get_source_csv_lines_from_hive, iterate_raw_source_csv
-from hhkardinal.train.cache import cache
+from resume_moderation_ml.model.train.utils.cache import cache
 from resume_moderation_ml.model.train.utils.transformers import JsonTextExtractor
 from resume_moderation_ml.model.train.utils.text import Analyzer
 from resume_moderation_ml.model.train.utils import identity_function
@@ -18,10 +17,8 @@ from resume_moderation_ml.model.train.utils import identity_function
 logger = logging.getLogger(__name__)
 
 
-_DATA_KEY = 'moderation/resume/bad_positions/data'
-_MODEL_KEY = 'moderation/resume/bad_positions/model'
-
-config = ModerationConfig()
+_DATA_KEY = 'resume_moderation_ml/model/train/bad_positions/data'
+_MODEL_KEY = 'resume_moderation_ml/model/train/bad_positions/model'
 
 
 def extract_moderator_name(resume):
@@ -31,7 +28,7 @@ def extract_moderator_name(resume):
     return (moder_full_name['lastName'] + u' ' + moder_full_name['firstName']).lower()
 
 
-@cache(_DATA_KEY)
+@cache(_DATA_KEY, cache_cls=cache_obj)
 def get_raw_data():
     logger.info('start extracting data for "bad titles" model')
 
@@ -72,7 +69,7 @@ def get_raw_data():
     }
 
 
-@cache(_MODEL_KEY)
+@cache(_MODEL_KEY, cache_cls=cache_obj)
 def get_model():
     data = get_raw_data()
     logger.info('start training "bad titles" classifier with %d points', len(data['titles']))
@@ -97,5 +94,4 @@ def get_model():
 
 
 if __name__ == '__main__':
-    init_train_env()
     get_model()

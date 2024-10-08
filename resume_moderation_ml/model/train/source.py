@@ -17,15 +17,16 @@ from resume_moderation_ml.model.train.targets import ModerationTargets
 from resume_moderation_ml.model.train.utils.cache import Cache
 from resume_moderation_ml.model.train import iterate_file_lines
 from ml_tools.kardinal_tools.state import State
-
+from resume_moderation_ml.model.train import cache_obj, config, state
 
 logger = logging.getLogger(__name__)
 
 csv.field_size_limit(sys.maxsize)
 
-config = ModerationConfig()
-state = State(config)
-cache = Cache(state)
+# config = ModerationConfig()
+# state = State(config)
+# cache = Cache(state)
+
 _SOURCE_RESUME_CSV_FILES_FROM_HIVE = {
     'all': 'resume_moderation_ml/model/train/data/resume_from_hive.csv',
     'main': 'resume_moderation_ml/model/train/data/resume_from_hive_main.csv',
@@ -118,8 +119,8 @@ def _extract_raw_data(dataset='main'):
 
 
 def get_raw_resumes_and_targets(dataset='main'):
-    if cache.contains_all(_RAW_RESUMES_KEYS[dataset], _TARGETS_KEYS[dataset]):
-        return cache.load(_RAW_RESUMES_KEYS[dataset]), cache.load(_TARGETS_KEYS[dataset])
+    if cache_obj.contains_all(_RAW_RESUMES_KEYS[dataset], _TARGETS_KEYS[dataset]):
+        return cache_obj.load(_RAW_RESUMES_KEYS[dataset]), cache_obj.load(_TARGETS_KEYS[dataset])
 
     if not os.path.exists(_SOURCE_RESUME_CSV_FILES_FROM_HIVE[dataset]):
         split_main_vectorizer()
@@ -127,8 +128,8 @@ def get_raw_resumes_and_targets(dataset='main'):
     logger.info('not all raw data is present in storage, start extracting')
     raw_resumes, targets = _extract_raw_data(dataset=dataset)
 
-    cache.save(raw_resumes, _RAW_RESUMES_KEYS[dataset])
-    cache.save(targets, _TARGETS_KEYS[dataset])
+    cache_obj.save(raw_resumes, _RAW_RESUMES_KEYS[dataset])
+    cache_obj.save(targets, _TARGETS_KEYS[dataset])
 
     return raw_resumes, targets
 

@@ -1,19 +1,14 @@
 import functools
-import logging
 import os.path
 
-from hhkardinal.server import lfs
-from hhkardinal.utils.storage import PICKLE_FORMAT, FSStorage, LoggingStorage
+from ml_tools.kardinal_tools.utils.storage import FSStorage, PICKLE_FORMAT
 
 TARGET_FLAGS = ['careless_key_skill_information', 'careless_additional_information',
                 'bad_function', 'bad_education']
 
 TASKS = ['approve_incomplete', 'approve_complete', 'block'] + TARGET_FLAGS
 
-_TRAIN_STORAGE = LoggingStorage(
-    FSStorage(os.path.dirname(__file__), PICKLE_FORMAT, 'resume_moderation_classifier'),
-    logging.getLogger('model')
-)
+_TRAIN_STORAGE = FSStorage(os.path.dirname(__file__), PICKLE_FORMAT, 'resume_moderation_classifier')
 
 
 def save(data, key):
@@ -39,9 +34,3 @@ def store(filename):
         return _process
 
     return _inner
-
-
-STORAGE = lfs.create_storage_variants(
-    'resume_moderation', lfs.LFS_PICKLE_FORMAT,
-    name_prefix='resume_moderation_classifier', logger=logging.getLogger('model')
-)
