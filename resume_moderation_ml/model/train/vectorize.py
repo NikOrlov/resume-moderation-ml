@@ -15,18 +15,38 @@ from resume_moderation_ml.model.train import bad_positions, source
 from resume_moderation_ml.model.train.environment import init_train_env
 from resume_moderation_ml.model.train.vocabulary import get_vocabularies
 from resume_moderation_ml.model.train import cache_obj
-from hhkardinal.train.data_fetcher import load_currency_rates
+from resume_moderation_ml.model.train.utils import cache
+
+# from hhkardinal.train.data_fetcher import load_currency_rates
 from hhkardinal.transformers.common import (
     CategoricalEncoder, ClassifierTransformer, InputLength, LogTransformer, ValueExtractor,
 )
 from hhkardinal.transformers.json import make_field_length_extractor
-from hhkardinal.transformers.text import Analyzer, OutOfVocabularyTokens, TokenLengthStatistics
-from hhkardinal.utils.text import alpha_quotient, caps_quotient
+from resume_moderation_ml.model.train.utils.text import Analyzer, OutOfVocabularyTokens, TokenLengthStatistics
 
 logger = logging.getLogger(__name__)
 
-_RESUME_VECTORS_KEY = 'moderation/resume/resume_vectors'
-_FEATURE_NAMES_KEY = 'moderation/resume/feature_names'
+_RESUME_VECTORS_KEY = 'resume_moderation_ml/model/train/resume_vectors'
+_FEATURE_NAMES_KEY = 'resume_moderation_ml/model/train/feature_names'
+
+
+def alpha_quotient(text: str) -> float:
+    if not text:
+        return 0.0
+    return sum(1.0 for ch in text if ch.isalpha()) / len(text)
+
+
+def caps_quotient(text: str) -> float:
+    alpha_chars = [ch for ch in text if ch.isalpha()]
+    if not alpha_chars:
+        return 0.0
+    return sum(1.0 for ch in alpha_chars if ch.isupper()) / len(alpha_chars)
+
+
+def load_currency_rates() -> dict:
+    # data = requests.get('https://api.hh.ru/dictionaries').json()
+    # return {currency['code']: currency['rate'] for currency in data['currency']}
+    return {'AZN': 0.017696, 'BYR': 0.034052, 'EUR': 0.009496, 'GEL': 0.028475, 'KGS': 0.881694, 'KZT': 5.015775, 'RUR': 1.0, 'UAH': 0.42873, 'USD': 0.01041, 'UZS': 132.983144}
 
 
 @classifier.store('vectorizer')
@@ -181,7 +201,7 @@ def get_vectorizer_pipe():
 
     vectorizer_pipe = FeatureUnion(transformers)
     logger.info('got %d features', len(feature_names))
-    cache.save(feature_names, _FEATURE_NAMES_KEY)
+    cache_obj.save(feature_names, _FEATURE_NAMES_KEY)
 
     logger.info('started fitting source resume vectorizer with %d resumes', len(resumes))
     vectorizer_pipe.fit(resumes)
@@ -189,7 +209,7 @@ def get_vectorizer_pipe():
     return vectorizer_pipe
 
 
-@cache.cache(_RESUME_VECTORS_KEY)
+@cache.cache(_RESUME_VECTORS_KEY, cache_cls=cache_obj)
 def get_resume_vectors():
     vectorizer = get_vectorizer_pipe()
     resumes = source.get_raw_resumes()
@@ -200,9 +220,9 @@ def get_resume_vectors():
 
 
 def get_feature_names():
-    return cache.load(_FEATURE_NAMES_KEY)
+    return cache_obj.load(_FEATURE_NAMES_KEY)
 
 
 if __name__ == '__main__':
-    init_train_env()
+    # init_train_env()
     get_resume_vectors()

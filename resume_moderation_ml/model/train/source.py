@@ -18,8 +18,9 @@ from resume_moderation_ml.model.train.utils.cache import Cache
 from resume_moderation_ml.model.train import iterate_file_lines
 from ml_tools.kardinal_tools.state import State
 from resume_moderation_ml.model.train import cache_obj, config, state
+from resume_moderation_ml.model.train.logger import setup_logger
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 csv.field_size_limit(sys.maxsize)
 

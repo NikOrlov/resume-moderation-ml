@@ -13,9 +13,9 @@ from resume_moderation_ml.model.train.utils.cache import cache
 from resume_moderation_ml.model.train.utils.transformers import JsonTextExtractor
 from resume_moderation_ml.model.train.utils.text import Analyzer
 from resume_moderation_ml.model.train.utils import identity_function
+from resume_moderation_ml.model.train.logger import setup_logger
 
-logger = logging.getLogger(__name__)
-
+logger = setup_logger(__name__)
 
 _DATA_KEY = 'resume_moderation_ml/model/train/bad_positions/data'
 _MODEL_KEY = 'resume_moderation_ml/model/train/bad_positions/model'
