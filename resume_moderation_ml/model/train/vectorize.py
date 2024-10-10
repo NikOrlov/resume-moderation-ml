@@ -20,7 +20,7 @@ from resume_moderation_ml.model.train.utils import cache
 from resume_moderation_ml.model.train.utils.transformers import (
     CategoricalEncoder, ClassifierTransformer, InputLength, LogTransformer, ValueExtractor,
 )
-from resume_moderation_ml.model.train.utils.json_extraction import make_field_length_extractor
+from resume_moderation_ml.model.train.utils.transformers import make_field_length_extractor
 from resume_moderation_ml.model.train.utils.text import Analyzer, OutOfVocabularyTokens, TokenLengthStatistics
 
 logger = logging.getLogger(__name__)

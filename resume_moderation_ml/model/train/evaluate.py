@@ -18,7 +18,7 @@ config = ModerationConfig()
 def cross_validate_model(task_name, X, y, cv, xgb_parameters=None):
     cv_result = []
 
-    logger.info('start cross validation (%d folds) on sample with %d objects', len(cv), X.shape[0])
+    logger.info('Start cross validation on sample with %d objects', X.shape[0])
 
     for fold_num, (train, test) in enumerate(cv):
         model = create_model(task_name, xgb_parameters=xgb_parameters)

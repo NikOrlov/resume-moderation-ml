@@ -26,12 +26,12 @@ class ModerationConfig(Config):
                 'colsample_bytree': 0.6,
                 'max_delta_step': 2.0,
                 'min_child_weight': 0.55,
-                'n_estimators': 1000,
+                'num_boost_round': 1000,
                 'subsample': 0.9,
                 'eta': 0.09,
                 'max_depth': 12,
                 'gamma': 1.95,
-                'silent': 1,
+                'verbosity': 1,
                 'threshold': {
                     'precision': 0.90
                 }
@@ -40,12 +40,12 @@ class ModerationConfig(Config):
                 'colsample_bytree': 0.8,
                 'max_delta_step': 0.0,
                 'min_child_weight': 1.1,
-                'n_estimators': 1000,
+                'num_boost_round': 1000,
                 'subsample': 0.95,
                 'eta': 0.09,
                 'max_depth': 12,
                 'gamma': 1.45,
-                'silent': 1,
+                'verbosity': 1,
                 'threshold': {
                     'precision': 0.97
                 }
@@ -54,12 +54,12 @@ class ModerationConfig(Config):
                 'colsample_bytree': 0.9,
                 'max_delta_step': 0.0,
                 'min_child_weight': 1.05,
-                'n_estimators': 1000,
+                'num_boost_round': 1000,
                 'subsample': 0.75,
                 'eta': 0.018,
                 'max_depth': 14,
                 'gamma': 1.95,
-                'silent': 1,
+                'verbosity': 1,
                 'threshold': {
                     'recall': 0.20
                 }
@@ -68,12 +68,12 @@ class ModerationConfig(Config):
                 'colsample_bytree': 0.95,
                 'max_delta_step': 0.0,
                 'min_child_weight': 1.35,
-                'n_estimators': 260,
+                'num_boost_round': 260,
                 'subsample': 0.9,
                 'eta': 0.031,
                 'max_depth': 5,
                 'gamma': 0.75,
-                'silent': 1,
+                'verbosity': 1,
                 'threshold': {
                     'recall': 0.95
                 }
@@ -82,12 +82,12 @@ class ModerationConfig(Config):
                 'colsample_bytree': 0.85,
                 'max_delta_step': 1.5,
                 'min_child_weight': 1.35,
-                'n_estimators': 1000,
+                'num_boost_round': 1000,
                 'subsample': 1.0,
                 'eta': 0.015,
                 'max_depth': 15,
                 'gamma': 1.8,
-                'silent': 1,
+                'verbosity': 1,
                 'threshold': {
                     'precision': 0.9
                 }
@@ -96,12 +96,12 @@ class ModerationConfig(Config):
                 'colsample_bytree': 0.95,
                 'max_delta_step': 0.0,
                 'min_child_weight': 1.1,
-                'n_estimators': 990,
+                'num_boost_round': 990,
                 'subsample': 0.9,
                 'eta': 0.014,
                 'max_depth': 7,
                 'gamma': 1.2,
-                'silent': 1,
+                'verbosity': 1,
                 'threshold': {
                     'precision': 0.75
                 }
@@ -110,12 +110,12 @@ class ModerationConfig(Config):
                 'colsample_bytree': 0.65,
                 'max_delta_step': 0.0,
                 'min_child_weight': 1.15,
-                'n_estimators': 990,
+                'num_boost_round': 990,
                 'subsample': 0.9,
                 'eta': 0.01,
                 'max_depth': 11,
                 'gamma': 0.55,
-                'silent': 1,
+                'verbosity': 1,
                 'threshold': {
                     'precision': 0.75
                 }
@@ -124,14 +124,14 @@ class ModerationConfig(Config):
 
         self.drop_salary_params = {
             'xgb_params': {
-                'n_estimators': 500,
+                'num_boost_round': 500,
                 'eta': 0.2,
                 'gamma': 0.0,
                 'max_delta_step': 1,
                 'max_depth': 3,
                 'min_child_weight': 30,
                 'subsample': 0.9,
-                'silent': 1,
+                'verbosity': 1,
             },
             'threshold': {
                 'precision': 0.97
@@ -155,7 +155,7 @@ class ModerationConfig(Config):
         try:
             from hyperopt import hp
             self.hp_param_space = {
-                'n_estimators': 100,
+                'num_boost_round': 100,
                 'eta': hp.quniform('eta', 0.01, 0.5, 0.01),
                 'max_depth': hp.choice('max_depth', range(1, 15)),
                 'min_child_weight': hp.quniform('min_child_weight', 0.5, 1.5, 0.05),

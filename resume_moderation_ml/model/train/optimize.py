@@ -1,5 +1,4 @@
 import copy
-import logging
 import os
 
 import numpy as np
@@ -8,14 +7,14 @@ from sklearn.model_selection import KFold
 
 from resume_moderation_ml.model.classifier import TASKS
 from resume_moderation_ml.model.train.config import ModerationConfig
-from resume_moderation_ml.model.train.environment import init_train_env
+from resume_moderation_ml.model.train.logger import setup_logger
 from resume_moderation_ml.model.train.evaluate import cross_validate_model
 from resume_moderation_ml.model.train.model import get_task_subjects
 from resume_moderation_ml.model.train.source import get_targets
 from resume_moderation_ml.model.train.vectorize import get_resume_vectors
 from resume_moderation_ml.model.train import cache_obj
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 config = ModerationConfig()
 
@@ -39,7 +38,7 @@ def optimize_xgb_params(task_name, X, y, param_space, max_evals=10, n_folds=5, r
     def _hp_wrapper(xgb_params):
         logger.info('trying xgb params: [%s]', serialize_params(xgb_params))
 
-        cv = KFold(n_splits=n_folds, random_state=random_state).split(np.arange(X.shape[0]))
+        cv = KFold(n_splits=n_folds, random_state=random_state, shuffle=True).split(np.arange(X.shape[0]))
 
         cv_result = cross_validate_model(task_name, X, y, cv, xgb_params)
         return {

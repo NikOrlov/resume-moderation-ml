@@ -6,9 +6,9 @@ from sklearn.preprocessing import LabelEncoder
 
 class XGBClassifier(BaseEstimator, ClassifierMixin):
 
-    def __init__(self, n_estimators=100, eta=0.3, gamma=0.0, max_depth=6, min_child_weight=1.0, max_delta_step=0.0,
-                 subsample=1.0, colsample_bytree=1.0, scale_pos_weight=1.0, silent=True, seed=0, nthread=-1):
-        self.n_estimators = n_estimators
+    def __init__(self, num_boost_round=100, eta=0.3, gamma=0.0, max_depth=6, min_child_weight=1.0, max_delta_step=0.0,
+                 subsample=1.0, colsample_bytree=1.0, scale_pos_weight=1.0, verbosity=True, seed=0, nthread=-1):
+        self.num_boost_round = num_boost_round
         self.eta = eta
         self.gamma = gamma
         self.max_depth = max_depth
@@ -19,7 +19,7 @@ class XGBClassifier(BaseEstimator, ClassifierMixin):
         self.scale_pos_weight = scale_pos_weight
         self.seed = seed
         self.nthread = nthread
-        self.silent = silent
+        self.verbosity = verbosity
 
         self.classes_ = None
         self.n_classes_ = None
@@ -33,7 +33,7 @@ class XGBClassifier(BaseEstimator, ClassifierMixin):
         xgb_params = self.get_params(deep=False)
         if self.nthread <= 0:
             xgb_params.pop('nthread', None)
-        xgb_params['silent'] = 1 if self.silent else 0
+        xgb_params['verbosity'] = 1 if self.verbosity else 0
         return xgb_params
 
     def fit(self, X, y, sample_weight=None, eval_set=None, eval_metric=None, early_stopping_rounds=None, verbose=False):
@@ -64,7 +64,7 @@ class XGBClassifier(BaseEstimator, ClassifierMixin):
                      for i, x in enumerate(eval_set)]
 
         train_dmatrix = xgb.DMatrix(X, label=labels, weight=sample_weight)
-        self.booster_ = xgb.train(xgb_options, train_dmatrix, self.n_estimators, evals=evals,
+        self.booster_ = xgb.train(xgb_options, train_dmatrix, self.num_boost_round, evals=evals,
                                   early_stopping_rounds=early_stopping_rounds, evals_result=eval_results,
                                   feval=eval_func, verbose_eval=verbose)
         if eval_results:

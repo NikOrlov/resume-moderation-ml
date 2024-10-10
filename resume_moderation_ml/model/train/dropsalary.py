@@ -15,12 +15,13 @@ from resume_moderation_ml.model.train.environment import init_train_env
 from resume_moderation_ml.model.train.source import get_source_csv_lines_from_hive, iterate_raw_source_csv
 from resume_moderation_ml.model.train.utils import cache
 from resume_moderation_ml.model.train import cache_obj
+from resume_moderation_ml.model.train.logger import setup_logger
 
 from resume_moderation_ml.model.train.utils.transformers import ValueExtractor
 from resume_moderation_ml.model.train.utils.stats import RunningStatistic, select_threshold
 from resume_moderation_ml.model.train.xgb import XGBClassifier
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 logger.setLevel(level=logging.DEBUG)
 _DATA_KEY = 'resume_moderation_ml/model/train/dropsalary/data'
 _RESUME_VECTORS_KEY = 'resume_moderation_ml/model/train/dropsalary/resume_vectors'
@@ -32,7 +33,6 @@ def load_currency_rates() -> dict:
     # data = requests.get('https://api.hh.ru/dictionaries').json()
     # return {currency['code']: currency['rate'] for currency in data['currency']}
     return {'AZN': 0.017696, 'BYR': 0.034052, 'EUR': 0.009496, 'GEL': 0.028475, 'KGS': 0.881694, 'KZT': 5.015775, 'RUR': 1.0, 'UAH': 0.42873, 'USD': 0.01041, 'UZS': 132.983144}
-
 
 
 def _resume_salary_key(resume):
