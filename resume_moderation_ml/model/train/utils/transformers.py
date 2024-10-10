@@ -87,3 +87,20 @@ class ClassifierTransformer(TransformerMixin, NoFitMixin):
         if result.shape[1] == 2:
             return result[:, [1]]
         return result
+
+
+# this functionality is implemented as callable class only for pickling
+class FieldLengthExtractor(object):
+    def __init__(self, field_name, required=True):
+        self.field_name = field_name
+        self.required = required
+
+    def __call__(self, doc):
+        if self.required and self.field_name not in doc:
+            raise KeyError(self.field_name)
+        value = doc.get(self.field_name)
+        return len(value) if value else 0
+
+
+def make_field_length_extractor(field_name, required=True):
+    return ValueExtractor(FieldLengthExtractor(field_name, required), dtype=np.float64)

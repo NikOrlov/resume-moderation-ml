@@ -1,7 +1,6 @@
 from itertools import chain
 from typing import Any, Iterator
 from resume_moderation_ml.model.train.utils import is_string, is_iterable, is_integer, is_mapping
-from resume_moderation_ml.model.train.utils.transformers import BaseEstimator, TransformerMixin, NoFitMixin, ValueExtractor
 
 
 def get_all_strings_from_json(data: Any) -> Iterator[str]:
@@ -58,28 +57,3 @@ def search_strings_in_json(data: Any, query: Any) -> Iterator[str]:
 
         for string in search_strings_in_json(selected_data, sub_query):
             yield string
-
-
-class JsonTextExtractor(BaseEstimator, TransformerMixin, NoFitMixin):
-    def __init__(self, query):
-        self.query = query
-
-    def transform(self, X):
-        return [u' '.join(search_strings_in_json(data_object, self.query)) for data_object in X]
-
-
-# this functionality is implemented as callable class only for pickling
-class FieldLengthExtractor(object):
-    def __init__(self, field_name, required=True):
-        self.field_name = field_name
-        self.required = required
-
-    def __call__(self, doc):
-        if self.required and self.field_name not in doc:
-            raise KeyError(self.field_name)
-        value = doc.get(self.field_name)
-        return len(value) if value else 0
-
-
-def make_field_length_extractor(field_name, required=True):
-    return ValueExtractor(FieldLengthExtractor(field_name, required), dtype=np.float64)
