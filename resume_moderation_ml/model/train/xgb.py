@@ -6,9 +6,9 @@ from sklearn.preprocessing import LabelEncoder
 
 class XGBClassifier(BaseEstimator, ClassifierMixin):
 
-    def __init__(self, num_boost_round=100, eta=0.3, gamma=0.0, max_depth=6, min_child_weight=1.0, max_delta_step=0.0,
+    def __init__(self, n_estimators=100, eta=0.3, gamma=0.0, max_depth=6, min_child_weight=1.0, max_delta_step=0.0,
                  subsample=1.0, colsample_bytree=1.0, scale_pos_weight=1.0, verbosity=True, seed=0, nthread=-1):
-        self.num_boost_round = num_boost_round
+        self.n_estimators = n_estimators
         self.eta = eta
         self.gamma = gamma
         self.max_depth = max_depth
@@ -64,7 +64,7 @@ class XGBClassifier(BaseEstimator, ClassifierMixin):
                      for i, x in enumerate(eval_set)]
 
         train_dmatrix = xgb.DMatrix(X, label=labels, weight=sample_weight)
-        self.booster_ = xgb.train(xgb_options, train_dmatrix, self.num_boost_round, evals=evals,
+        self.booster_ = xgb.train(xgb_options, train_dmatrix, self.n_estimators, evals=evals,
                                   early_stopping_rounds=early_stopping_rounds, evals_result=eval_results,
                                   feval=eval_func, verbose_eval=verbose)
         if eval_results:

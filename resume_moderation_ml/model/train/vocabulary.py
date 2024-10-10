@@ -6,9 +6,11 @@ from sklearn.pipeline import Pipeline
 from resume_moderation_ml.model import text_fields
 from resume_moderation_ml.model.train import source
 from resume_moderation_ml.model.train.environment import init_train_env
-# from hhkardinal.train.cache import cache
+from resume_moderation_ml.model.train.utils.cache import cache
+from resume_moderation_ml.model.train import cache_obj
+from resume_moderation_ml.model.train.logger import setup_logger
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 
 def _train_vectorizer(raw_resumes, field_name):
@@ -31,7 +33,7 @@ def get_vocabularies(field_names):
     vocabularies = {}
 
     for field_name in field_names:
-        # @cache('moderation/resume/vocabulary/' + field_name)
+        @cache('moderation/resume/vocabulary/' + field_name, cache_cls=cache_obj)
         def _train_single():
             return _train_vectorizer(raw_resumes, field_name).vocabulary_
         vocabularies[field_name] = _train_single()
