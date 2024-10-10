@@ -9,8 +9,9 @@ from resume_moderation_ml.model.train.environment import init_train_env
 from resume_moderation_ml.model.train.model import create_model, get_task_subjects
 from resume_moderation_ml.model.train.source import get_targets
 from resume_moderation_ml.model.train.vectorize import get_resume_vectors
+from resume_moderation_ml.model.train.logger import setup_logger
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 config = ModerationConfig()
 
@@ -44,7 +45,7 @@ def evaluate_model(task_name, resume_vectors, targets):
     logger.info('evaluate model for task %s', task_name)
 
     X, y = get_task_subjects(task_name, resume_vectors, targets)
-    cv = KFold(n_splits=config.cv_number_of_folds, random_state=config.cv_seed).split(np.arange(X.shape[0]))
+    cv = KFold(n_splits=config.cv_number_of_folds, random_state=config.cv_seed, shuffle=True).split(np.arange(X.shape[0]))
     cross_validate_model(task_name, X, y, cv)
 
 

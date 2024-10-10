@@ -33,7 +33,7 @@ def get_vocabularies(field_names):
     vocabularies = {}
 
     for field_name in field_names:
-        @cache('moderation/resume/vocabulary/' + field_name, cache_cls=cache_obj)
+        @cache('resume_moderation/model/vocabulary/' + field_name, cache_cls=cache_obj)
         def _train_single():
             return _train_vectorizer(raw_resumes, field_name).vocabulary_
         vocabularies[field_name] = _train_single()
