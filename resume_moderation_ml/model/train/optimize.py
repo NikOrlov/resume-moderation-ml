@@ -13,7 +13,7 @@ from resume_moderation_ml.model.train.evaluate import cross_validate_model
 from resume_moderation_ml.model.train.model import get_task_subjects
 from resume_moderation_ml.model.train.source import get_targets
 from resume_moderation_ml.model.train.vectorize import get_resume_vectors
-from hhkardinal.train import cache
+from resume_moderation_ml.model.train import cache_obj
 
 logger = logging.getLogger(__name__)
 
@@ -71,10 +71,10 @@ def run_params_optimization():
         trials, best_params = optimize_xgb_params(task_name, X, y, **optimization_config)
 
         output_path = os.path.join('moderation/resume/hp', task_name)
-        cache.save(trials, os.path.join(output_path, 'trials'))
-        cache.save(best_params, os.path.join(output_path, 'best'))
+        cache_obj.save(trials, os.path.join(output_path, 'trials'))
+        cache_obj.save(best_params, os.path.join(output_path, 'best'))
 
 
 if __name__ == '__main__':
-    init_train_env()
+    # init_train_env()
     run_params_optimization()

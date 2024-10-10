@@ -10,9 +10,10 @@ from resume_moderation_ml.model.train.environment import init_train_env
 from resume_moderation_ml.model.train.model import create_model, get_model_parameters, get_task_subjects
 from resume_moderation_ml.model.train.source import get_targets
 from resume_moderation_ml.model.train.vectorize import get_resume_vectors
-from hhkardinal.utils.stats import select_threshold
+from resume_moderation_ml.model.train.utils.stats import select_threshold
+from resume_moderation_ml.model.train.logger import setup_logger
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 config = ModerationConfig()
 
@@ -62,6 +63,6 @@ def read_tasks():
 
 
 if __name__ == '__main__':
-    init_train_env()
+    # init_train_env()
     tasks = read_tasks()
     run_fitting(tasks)

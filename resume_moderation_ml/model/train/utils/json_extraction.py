@@ -1,7 +1,8 @@
 from itertools import chain
 from typing import Any, Iterator
 from resume_moderation_ml.model.train.utils import is_string, is_iterable, is_integer, is_mapping
-from resume_moderation_ml.model.train.utils.;
+from resume_moderation_ml.model.train.utils.transformers import BaseEstimator, TransformerMixin, NoFitMixin, ValueExtractor
+
 
 def get_all_strings_from_json(data: Any) -> Iterator[str]:
     if is_mapping(data):
@@ -58,6 +59,7 @@ def search_strings_in_json(data: Any, query: Any) -> Iterator[str]:
         for string in search_strings_in_json(selected_data, sub_query):
             yield string
 
+
 class JsonTextExtractor(BaseEstimator, TransformerMixin, NoFitMixin):
     def __init__(self, query):
         self.query = query
@@ -81,4 +83,3 @@ class FieldLengthExtractor(object):
 
 def make_field_length_extractor(field_name, required=True):
     return ValueExtractor(FieldLengthExtractor(field_name, required), dtype=np.float64)
-

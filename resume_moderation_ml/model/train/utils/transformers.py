@@ -32,3 +32,58 @@ class ValueExtractor(TransformerMixin, NoFitMixin):
         if self.dtype is not None:
             transformed = transformed.astype(self.dtype)
         return transformed
+
+
+class LogTransformer(TransformerMixin, NoFitMixin):
+    def transform(self, X):
+        return np.log(1.0 + X)
+
+
+class InputLength(BaseEstimator, TransformerMixin, NoFitMixin):
+    def transform(self, X):
+        return np.array([len(obj) for obj in X], dtype=np.float64)[:, np.newaxis]
+
+    def get_feature_names(self):
+        return ['len']
+
+
+# compared to LabelEncoder from sklearn this one doesn't fail if it encounters unknown category
+class CategoricalEncoder(TransformerMixin):
+    def __init__(self):
+        self.categories_ = None
+        self.values_ = None
+
+    def fit(self, X, y=None):
+        values = sorted(set(x[0] for x in X))
+        self.categories_ = {value: idx for idx, value in enumerate(values)}
+
+        self.values_ = values
+        self.values_.append('__unknown')
+        return self
+
+    def _check_fitted(self):
+        if self.categories_ is None:
+            raise ValueError('CategoricalEncoder was not fitted yet')
+
+    def transform(self, X):
+        self._check_fitted()
+        unknown = len(self.categories_)
+        transformed = np.array([self.categories_.get(x[0], unknown) for x in X])[:, np.newaxis]
+        return transformed
+
+    def inverse_transform(self, X):
+        self._check_fitted()
+
+        return np.array([self.values_[int(x[0])] for x in X])[:, np.newaxis]
+
+
+class ClassifierTransformer(TransformerMixin, NoFitMixin):
+
+    def __init__(self, clf):
+        self.clf = clf
+
+    def transform(self, X):
+        result = self.clf.predict_proba(X)
+        if result.shape[1] == 2:
+            return result[:, [1]]
+        return result

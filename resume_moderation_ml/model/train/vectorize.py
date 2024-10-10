@@ -17,11 +17,10 @@ from resume_moderation_ml.model.train.vocabulary import get_vocabularies
 from resume_moderation_ml.model.train import cache_obj
 from resume_moderation_ml.model.train.utils import cache
 
-# from hhkardinal.train.data_fetcher import load_currency_rates
-from hhkardinal.transformers.common import (
+from resume_moderation_ml.model.train.utils.transformers import (
     CategoricalEncoder, ClassifierTransformer, InputLength, LogTransformer, ValueExtractor,
 )
-from hhkardinal.transformers.json import make_field_length_extractor
+from resume_moderation_ml.model.train.utils.json_extraction import make_field_length_extractor
 from resume_moderation_ml.model.train.utils.text import Analyzer, OutOfVocabularyTokens, TokenLengthStatistics
 
 logger = logging.getLogger(__name__)

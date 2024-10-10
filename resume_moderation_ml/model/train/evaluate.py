@@ -56,5 +56,5 @@ def run_evaluation():
 
 
 if __name__ == '__main__':
-    init_train_env()
+    # init_train_env()
     run_evaluation()

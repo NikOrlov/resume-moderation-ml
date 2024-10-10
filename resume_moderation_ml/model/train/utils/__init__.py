@@ -13,6 +13,7 @@ StorageKey = MaybeIterable[str]
 def identity_function(argument: T) -> T:
     return argument
 
+
 def is_integer(variable: Any) -> bool:
     return isinstance(variable, int)
 
