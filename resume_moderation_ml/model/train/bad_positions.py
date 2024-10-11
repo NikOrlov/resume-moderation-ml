@@ -1,4 +1,3 @@
-import logging
 import numbers
 
 import numpy as np
@@ -7,7 +6,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.utils.validation import check_random_state
 
-from resume_moderation_ml.model.train import config, cache_obj
+from resume_moderation_ml.model.train import cache_obj
+from resume_moderation_ml.model.train.config import resume_moderation_config
+
 from resume_moderation_ml.model.train.source import get_source_csv_lines_from_hive, iterate_raw_source_csv
 from resume_moderation_ml.model.train.utils.cache import cache
 from resume_moderation_ml.model.train.utils.transformers import JsonTextExtractor
@@ -49,15 +50,15 @@ def get_raw_data():
     titles = approved_titles + blocked_titles
     targets = np.hstack([np.zeros(len(approved_titles)), np.ones(len(blocked_titles))])
 
-    rng = check_random_state(config.bad_positions['seed'])
+    rng = check_random_state(resume_moderation_config.bad_positions['seed'])
     permutation = rng.permutation(len(titles))
     titles = [titles[i] for i in permutation]
     targets = targets[permutation]
 
-    if isinstance(config.bad_positions['subset_size'], numbers.Real):
-        subset_size = int(round(len(titles) * config.bad_positions['subset_size']))
+    if isinstance(resume_moderation_config.bad_positions['subset_size'], numbers.Real):
+        subset_size = int(round(len(titles) * resume_moderation_config.bad_positions['subset_size']))
     else:
-        subset_size = config.bad_positions['subset_size']
+        subset_size = resume_moderation_config.bad_positions['subset_size']
 
     titles = titles[:subset_size]
     targets = targets[:subset_size]
@@ -85,7 +86,7 @@ def get_model():
         norm='l2',
         binary=True, use_idf=True
     )
-    log_reg = LogisticRegression(random_state=config.bad_positions['seed'], **config.bad_positions['log_reg'])
+    log_reg = LogisticRegression(random_state=resume_moderation_config.bad_positions['seed'], **resume_moderation_config.bad_positions['log_reg'])
     make_pipeline(analyzer, vectorizer, log_reg).fit(data['titles'], data['targets'])
     extractor = JsonTextExtractor('title')
 

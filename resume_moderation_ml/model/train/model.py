@@ -4,16 +4,14 @@ import numpy as np
 
 from resume_moderation_ml.model.classifier import TARGET_FLAGS
 from resume_moderation_ml.model.manual_rules import ManualRejectEstimator
-from resume_moderation_ml.model.train.config import ModerationConfig
+from resume_moderation_ml.model.train.config import resume_moderation_config
 from resume_moderation_ml.model.train.xgb import XGBClassifier
-
-config = ModerationConfig()
 
 
 def get_model_parameters(task_name):
-    parameters = copy.copy(config.common_xgb_params)
-    parameters['nthread'] = config.ncores
-    parameters.update(config.model_params[task_name])
+    parameters = copy.copy(resume_moderation_config.common_xgb_params)
+    parameters['nthread'] = resume_moderation_config.ncores
+    parameters.update(resume_moderation_config.model_params[task_name])
     return parameters
 
 

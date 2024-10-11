@@ -1,5 +1,3 @@
-import logging
-
 import numpy as np
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.preprocessing import OneHotEncoder
@@ -12,7 +10,6 @@ from resume_moderation_ml.model.resume import (
     get_time_without_work, get_title_delimiters_count, get_total_experience, has_photo, is_incomplete,
 )
 from resume_moderation_ml.model.train import bad_positions, source
-from resume_moderation_ml.model.train.environment import init_train_env
 from resume_moderation_ml.model.train.vocabulary import get_vocabularies
 from resume_moderation_ml.model.train import cache_obj
 from resume_moderation_ml.model.train.utils import cache
@@ -22,8 +19,9 @@ from resume_moderation_ml.model.train.utils.transformers import (
 )
 from resume_moderation_ml.model.train.utils.transformers import make_field_length_extractor
 from resume_moderation_ml.model.train.utils.text import Analyzer, OutOfVocabularyTokens, TokenLengthStatistics
+from resume_moderation_ml.model.train.logger import setup_logger
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 _RESUME_VECTORS_KEY = 'resume_moderation_ml/model/train/resume_vectors'
 _FEATURE_NAMES_KEY = 'resume_moderation_ml/model/train/feature_names'

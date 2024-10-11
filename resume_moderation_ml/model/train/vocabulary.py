@@ -1,11 +1,9 @@
-import logging
 import sys
 
 from sklearn.pipeline import Pipeline
 
 from resume_moderation_ml.model import text_fields
 from resume_moderation_ml.model.train import source
-from resume_moderation_ml.model.train.environment import init_train_env
 from resume_moderation_ml.model.train.utils.cache import cache
 from resume_moderation_ml.model.train import cache_obj
 from resume_moderation_ml.model.train.logger import setup_logger
@@ -33,7 +31,7 @@ def get_vocabularies(field_names):
     vocabularies = {}
 
     for field_name in field_names:
-        @cache('resume_moderation/model/vocabulary/' + field_name, cache_cls=cache_obj)
+        @cache('resume_moderation_ml/model/vocabulary/' + field_name, cache_cls=cache_obj)
         def _train_single():
             return _train_vectorizer(raw_resumes, field_name).vocabulary_
         vocabularies[field_name] = _train_single()
@@ -42,7 +40,6 @@ def get_vocabularies(field_names):
 
 
 if __name__ == '__main__':
-    init_train_env()
     fields = sys.argv[1:]
     if not fields:
         fields = text_fields.FIELDS_TO_ANALYZE

@@ -1,12 +1,10 @@
 import argparse
-import logging
 
 from sklearn.metrics import precision_recall_curve, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 
 from resume_moderation_ml.model import classifier
-from resume_moderation_ml.model.train.config import ModerationConfig
-from resume_moderation_ml.model.train.environment import init_train_env
+from resume_moderation_ml.model.train.config import resume_moderation_config
 from resume_moderation_ml.model.train.model import create_model, get_model_parameters, get_task_subjects
 from resume_moderation_ml.model.train.source import get_targets
 from resume_moderation_ml.model.train.vectorize import get_resume_vectors
@@ -15,15 +13,13 @@ from resume_moderation_ml.model.train.logger import setup_logger
 
 logger = setup_logger(__name__)
 
-config = ModerationConfig()
-
 
 def fit_model(task_name, resume_vectors, targets):
     logger.info('fit model for task %s', task_name)
 
     X, y = get_task_subjects(task_name, resume_vectors, targets)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=config.cv_seed,
-                                                        test_size=1.0 / config.cv_number_of_folds)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=resume_moderation_config.cv_seed,
+                                                        test_size=1.0 / resume_moderation_config.cv_number_of_folds)
     model = create_model(task_name).fit(X_train, y_train)
 
     threshold_params = get_model_parameters(task_name).get('threshold', {})
@@ -63,6 +59,5 @@ def read_tasks():
 
 
 if __name__ == '__main__':
-    # init_train_env()
     tasks = read_tasks()
     run_fitting(tasks)

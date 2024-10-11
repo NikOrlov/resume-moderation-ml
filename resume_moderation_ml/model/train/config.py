@@ -3,13 +3,13 @@ from datetime import datetime
 from ml_tools.kardinal_tools.utils.config import Config
 
 
-class ModerationConfig(Config):
+class ResumeModerationConfig(Config):
     __slots__ = ('hh_db_config', 'creation_time_threshold', 'test_size', 'vectorizer_size',
                  'model_params', 'drop_salary_params', 'bad_positions', 'cv_seed',
                  'cv_number_of_folds', 'common_xgb_params', 'hp_param_space', 'hp_max_evals')
 
     def __init__(self):
-        super(ModerationConfig, self).__init__()
+        super(ResumeModerationConfig, self).__init__()
         self.hh_db_config = {
             'database': 'hh',
             'host': 'dev-db2.pyn.ru',
@@ -176,3 +176,6 @@ class ModerationConfig(Config):
         border5 = datetime.strptime('2021-06-18 00:00:00', '%Y-%m-%d %H:%M:%S')
         percent = 10 if creation_time < border5 else 5
         return (resume_id % 100) < percent
+
+
+resume_moderation_config = ResumeModerationConfig()

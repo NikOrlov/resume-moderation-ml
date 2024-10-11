@@ -10,8 +10,7 @@ from sklearn.model_selection import train_test_split
 
 from resume_moderation_ml.model import classifier
 from resume_moderation_ml.model.resume import SalaryDropFeaturesExtractor
-from resume_moderation_ml.model.train.config import ModerationConfig
-from resume_moderation_ml.model.train.environment import init_train_env
+from resume_moderation_ml.model.train.config import resume_moderation_config
 from resume_moderation_ml.model.train.source import get_source_csv_lines_from_hive, iterate_raw_source_csv
 from resume_moderation_ml.model.train.utils import cache
 from resume_moderation_ml.model.train import cache_obj
@@ -25,8 +24,6 @@ logger = setup_logger(__name__)
 logger.setLevel(level=logging.DEBUG)
 _DATA_KEY = 'resume_moderation_ml/model/train/dropsalary/data'
 _RESUME_VECTORS_KEY = 'resume_moderation_ml/model/train/dropsalary/resume_vectors'
-
-config = ModerationConfig()
 
 
 def load_currency_rates() -> dict:
@@ -96,11 +93,11 @@ def fit_model():
     X = get_resume_vectors()
     y, w = get_targets_and_weights()
     X_train, X_test, y_train, y_test, w_train, w_test = train_test_split(
-        X, y, w, test_size=config.drop_salary_params['validation_size'], random_state=config.cv_seed)
+        X, y, w, test_size=resume_moderation_config.drop_salary_params['validation_size'], random_state=resume_moderation_config.cv_seed)
 
-    xgb_params = copy(config.common_xgb_params)
-    xgb_params['nthread'] = config.ncores
-    xgb_params.update(config.drop_salary_params['xgb_params'])
+    xgb_params = copy(resume_moderation_config.common_xgb_params)
+    xgb_params['nthread'] = resume_moderation_config.ncores
+    xgb_params.update(resume_moderation_config.drop_salary_params['xgb_params'])
 
     model = XGBClassifier(**xgb_params)
     model.fit(X_train, y_train, sample_weight=w_train)
@@ -108,7 +105,7 @@ def fit_model():
     roc_auc = roc_auc_score(y_test, prediction, sample_weight=w_test)
 
     precision, recall, thresholds = precision_recall_curve(y_test, prediction, sample_weight=w_test)
-    threshold = select_threshold(precision, recall, thresholds, config.drop_salary_params['threshold'])
+    threshold = select_threshold(precision, recall, thresholds, resume_moderation_config.drop_salary_params['threshold'])
     model.threshold = threshold
     prediction = (prediction >= model.threshold).astype(int)
 
@@ -121,3 +118,5 @@ def fit_model():
 if __name__ == '__main__':
     # init_train_env()
     fit_model()
+
+

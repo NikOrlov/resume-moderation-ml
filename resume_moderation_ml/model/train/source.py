@@ -3,7 +3,6 @@ import datetime
 import functools
 import itertools
 import json
-import logging
 import os
 import sys
 from collections import Counter
@@ -11,22 +10,17 @@ from collections import Counter
 from ciso8601 import parse_datetime
 from sklearn.model_selection import train_test_split
 
-from resume_moderation_ml.model.train.config import ModerationConfig
-from resume_moderation_ml.model.train.environment import init_train_env
 from resume_moderation_ml.model.train.targets import ModerationTargets
-from resume_moderation_ml.model.train.utils.cache import Cache
 from resume_moderation_ml.model.train import iterate_file_lines
-from ml_tools.kardinal_tools.state import State
-from resume_moderation_ml.model.train import cache_obj, config, state
+from resume_moderation_ml.model.train import cache_obj
+from resume_moderation_ml.model.train.config import resume_moderation_config
+
 from resume_moderation_ml.model.train.logger import setup_logger
 
 logger = setup_logger(__name__)
 
 csv.field_size_limit(sys.maxsize)
 
-# config = ModerationConfig()
-# state = State(config)
-# cache = Cache(state)
 
 _SOURCE_RESUME_CSV_FILES_FROM_HIVE = {
     'all': 'resume_moderation_ml/model/train/data/resume_from_hive.csv',
@@ -55,7 +49,7 @@ QUOTE_CHAR = '`'
 
 _ALLOWED_STATUSES = ['approved', 'blocked', 'deleted']
 
-_CREATION_TIME_THRESHOLD = parse_datetime(config.creation_time_threshold)
+_CREATION_TIME_THRESHOLD = parse_datetime(resume_moderation_config.creation_time_threshold)
 
 
 def iterate_raw_source_csv(input_file):
@@ -160,11 +154,11 @@ def split_main_vectorizer():
     for id_, status, source_version, moderated_version, complete_status, creation_time \
             in iterate_raw_source_csv(csv_lines_iterator()):
         id_ = int(id_)
-        if not config.moderated_by_human(id_, creation_time):
+        if not resume_moderation_config.moderated_by_human(id_, creation_time):
             continue
         allowed_ids.append(id_)
-    main_resume_ids, vectorizer_resume_ids = map(set, train_test_split(allowed_ids, test_size=config.vectorizer_size,
-                                                                       random_state=config.cv_seed))
+    main_resume_ids, vectorizer_resume_ids = map(set, train_test_split(allowed_ids, test_size=resume_moderation_config.vectorizer_size,
+                                                                       random_state=resume_moderation_config.cv_seed))
 
     with open(_SOURCE_RESUME_CSV_FILES_FROM_HIVE['all'], 'r') as in_file, \
             open(_SOURCE_RESUME_CSV_FILES_FROM_HIVE['main'], 'w') as main_file, \
