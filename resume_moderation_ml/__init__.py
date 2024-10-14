@@ -1,6 +1,4 @@
 import pickle
-
-import joblib
 from mlback.server.app import MLBackApplication
 
 from resume_moderation_ml.model.predictor import ResumeModerationPredictor
@@ -16,8 +14,17 @@ def load_model(name, dir_name=DIR_PATH):
         return pickle.load(file)
 
 
+def load_artifact(artifact):
+    with open(artifact.path, 'rb') as file:
+        return pickle.load(file)
+
+
 class Application(MLBackApplication):
     def init_models(self) -> None:
+        # artifact = self.models_config["vod"][name]
+        # with open(artifact.path, "rb") as file:
+        #     self.models["vod"][name] = pickle.load(file)
+
         models = ["approve_incomplete", "approve_complete", "block"]
         flag_models = [
             "careless_key_skill_information",
@@ -27,17 +34,23 @@ class Application(MLBackApplication):
         ]
         self.models = {}
         self.flag_models = {}
-
-        for model_name in models:
-            self.models[model_name] = load_model(model_name)
-        for model_name in flag_models:
-            self.flag_models[model_name] = load_model(model_name)
+        self.dropsalary = {}
+        for model in models:
+            artifact = self.models_config["models"][model]
+            self.models[model] = load_artifact(artifact)
+        for model in flag_models:
+            artifact = self.models_config["flags"][model]
+            self.flag_models[model] = load_artifact(artifact)
+        for model in ['classifier', 'vectorizer']:
+            artifact = self.models_config["dropsalary"][model]
+            self.dropsalary[model] = load_artifact(artifact)
 
         self.dropsalary = {
             "classifier": load_model("dropsalary/classifier"),
             "vectorizer": load_model("dropsalary/vectorizer"),
         }
-        self.vectorizer = joblib.load("resume_moderation_ml/model/classifier/vectorizer.pickle", mmap_mode="r")
+        vectorizer_artifact = self.models_config['vectorizer']
+        self.vectorizer = load_artifact(vectorizer_artifact)
 
         predictor = ResumeModerationPredictor(
             vectorizer=self.vectorizer,
