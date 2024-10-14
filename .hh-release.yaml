@@ -1,0 +1,10 @@
+version: 0.1.1
+docker_files:
+  resume-moderation-ml: docker/Dockerfile
+build_docker_file: docker/Dockerfile.building
+docker_context: .
+update_method: python_update
+build_method: nope_build
+deploy_method: nope_deploy
+python_version_file: resume_moderation_ml/version.py
+ml_models_config: config/models.cfg

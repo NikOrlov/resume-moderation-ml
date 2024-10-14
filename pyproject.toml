@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "resume-moderaion-ml"
+name = "resume-moderation-ml"
 version = '1.0.1'
 description = ""
 authors = ["n.orlov <n.orlov@hh.ru>"]
