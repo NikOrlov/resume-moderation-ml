@@ -10,7 +10,6 @@ def to_numpy_array(arr):
 
 
 class ManualRejectEstimator(BaseEstimator, ClassifierMixin):
-
     def __init__(self, feature_number, delegate):
         self.feature_number_ = feature_number
         self.delegate_ = delegate

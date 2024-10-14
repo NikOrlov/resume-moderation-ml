@@ -1,14 +1,13 @@
 import functools
 import os.path
 
-from ml_tools.kardinal_tools.utils.storage import FSStorage, PICKLE_FORMAT
+from ml_tools.kardinal_tools.utils.storage import PICKLE_FORMAT, FSStorage
 
-TARGET_FLAGS = ['careless_key_skill_information', 'careless_additional_information',
-                'bad_function', 'bad_education']
+TARGET_FLAGS = ["careless_key_skill_information", "careless_additional_information", "bad_function", "bad_education"]
 
-TASKS = ['approve_incomplete', 'approve_complete', 'block'] + TARGET_FLAGS
+TASKS = ["approve_incomplete", "approve_complete", "block"] + TARGET_FLAGS
 
-_TRAIN_STORAGE = FSStorage(os.path.dirname(__file__), PICKLE_FORMAT, 'resume_moderation_classifier')
+_TRAIN_STORAGE = FSStorage(os.path.dirname(__file__), PICKLE_FORMAT, "resume_moderation_classifier")
 
 
 def save(data, key):

@@ -1,6 +1,7 @@
 import logging
 import sys
 
+
 def setup_logger(name, level=logging.DEBUG):
     """
     Sets up a logger with the specified name and level.
@@ -22,9 +23,7 @@ def setup_logger(name, level=logging.DEBUG):
         console_handler.setLevel(level)
 
         # Create formatter and add it to the handler
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         console_handler.setFormatter(formatter)
 
         # Add handler to the logger

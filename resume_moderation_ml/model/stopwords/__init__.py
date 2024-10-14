@@ -8,5 +8,5 @@ def _load(path):
 
 _path = os.path.dirname(os.path.abspath(__file__))
 
-stop_positions = _load(os.path.join(_path, 'stop_positions.txt'))
-stop_words = _load(os.path.join(_path, 'stop_words.txt'))
+stop_positions = _load(os.path.join(_path, "stop_positions.txt"))
+stop_words = _load(os.path.join(_path, "stop_words.txt"))

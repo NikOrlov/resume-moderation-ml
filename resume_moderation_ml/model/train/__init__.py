@@ -1,7 +1,9 @@
 from typing import Iterator
+
+from ml_tools.kardinal_tools.state import State
+
 from resume_moderation_ml.model.train.config import resume_moderation_config
 from resume_moderation_ml.model.train.utils.cache import Cache
-from ml_tools.kardinal_tools.state import State
 
 
 def iterate_file_lines(filename: str) -> Iterator[str]:

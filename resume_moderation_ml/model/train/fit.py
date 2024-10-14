@@ -5,24 +5,25 @@ from sklearn.model_selection import train_test_split
 
 from resume_moderation_ml.model import classifier
 from resume_moderation_ml.model.train.config import resume_moderation_config
+from resume_moderation_ml.model.train.logger import setup_logger
 from resume_moderation_ml.model.train.model import create_model, get_model_parameters, get_task_subjects
 from resume_moderation_ml.model.train.source import get_targets
-from resume_moderation_ml.model.train.vectorize import get_resume_vectors
 from resume_moderation_ml.model.train.utils.stats import select_threshold
-from resume_moderation_ml.model.train.logger import setup_logger
+from resume_moderation_ml.model.train.vectorize import get_resume_vectors
 
 logger = setup_logger(__name__)
 
 
 def fit_model(task_name, resume_vectors, targets):
-    logger.info('fit model for task %s', task_name)
+    logger.info("fit model for task %s", task_name)
 
     X, y = get_task_subjects(task_name, resume_vectors, targets)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=resume_moderation_config.cv_seed,
-                                                        test_size=1.0 / resume_moderation_config.cv_number_of_folds)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, random_state=resume_moderation_config.cv_seed, test_size=1.0 / resume_moderation_config.cv_number_of_folds
+    )
     model = create_model(task_name).fit(X_train, y_train)
 
-    threshold_params = get_model_parameters(task_name).get('threshold', {})
+    threshold_params = get_model_parameters(task_name).get("threshold", {})
 
     prediction = model.predict_proba(X_test)[:, 1]
     precision, recall, thresholds = precision_recall_curve(y_test, prediction)
@@ -32,10 +33,15 @@ def fit_model(task_name, resume_vectors, targets):
     try:
         roc_auc = roc_auc_score(y_test, prediction)
         prediction = (prediction >= threshold).astype(int)
-        logger.info('roc_auc is %.5f, chose threshold %.5f got precision %.5f and recall %.5f',
-                    roc_auc, threshold, precision_score(y_test, prediction), recall_score(y_test, prediction))
+        logger.info(
+            "roc_auc is %.5f, chose threshold %.5f got precision %.5f and recall %.5f",
+            roc_auc,
+            threshold,
+            precision_score(y_test, prediction),
+            recall_score(y_test, prediction),
+        )
     except Exception as e:
-        msg = f'{task_name} got error: {e}'
+        msg = f"{task_name} got error: {e}"
         logger.error(msg)
     return model
 
@@ -50,10 +56,17 @@ def run_fitting(tasks):
 
 
 def read_tasks():
-    parser = argparse.ArgumentParser(description='fit resume moderation models')
-    all_tasks = ('approve_complete', 'approve_incomplete', 'block', 'careless_key_skill_information',
-                 'careless_additional_information', 'bad_function', 'bad_education')
-    parser.add_argument('--task', choices=all_tasks, help='select model to fit')
+    parser = argparse.ArgumentParser(description="fit resume moderation models")
+    all_tasks = (
+        "approve_complete",
+        "approve_incomplete",
+        "block",
+        "careless_key_skill_information",
+        "careless_additional_information",
+        "bad_function",
+        "bad_education",
+    )
+    parser.add_argument("--task", choices=all_tasks, help="select model to fit")
     args = parser.parse_args()
     if args.task:
         return [args.task]
@@ -61,6 +74,6 @@ def read_tasks():
         return all_tasks
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     tasks = read_tasks()
     run_fitting(tasks)

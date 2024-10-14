@@ -25,7 +25,7 @@ class OutOfVocabularyTokens(BaseEstimator, TransformerMixin, NoFitMixin):
         return np.asarray(list(map(self._transform_single, X)))[:, np.newaxis]
 
     def get_feature_names(self):
-        return ['oov']
+        return ["oov"]
 
 
 class TokenLengthStatistics(BaseEstimator, TransformerMixin, NoFitMixin):
@@ -54,10 +54,10 @@ class TokenLengthStatistics(BaseEstimator, TransformerMixin, NoFitMixin):
         return result
 
     def get_feature_names(self):
-        return ['perc_{:.1f}'.format(perc) for perc in self.percentiles] + ['mean', 'std']
+        return ["perc_{:.1f}".format(perc) for perc in self.percentiles] + ["mean", "std"]
 
 
-_STEMMERS_CHAIN = [SnowballStemmer('russian'), PorterStemmer()]
+_STEMMERS_CHAIN = [SnowballStemmer("russian"), PorterStemmer()]
 _TOKENIZER_PATTERN = re.compile(r"(?u)\b\w\w+\b")
 
 
@@ -83,7 +83,6 @@ def _tokenize(text):
 
 
 class Analyzer(BaseEstimator, TransformerMixin, NoFitMixin):
-
     def __init__(self, use_stemming=True):
         self.use_stemming = use_stemming
 

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
+
 from resume_moderation_ml.model.train.utils.json_extraction import search_strings_in_json
 
 
@@ -14,7 +15,7 @@ class JsonTextExtractor(BaseEstimator, TransformerMixin, NoFitMixin):
         self.query = query
 
     def transform(self, X):
-        return [u' '.join(search_strings_in_json(data_object, self.query)) for data_object in X]
+        return [" ".join(search_strings_in_json(data_object, self.query)) for data_object in X]
 
 
 class ValueExtractor(TransformerMixin, NoFitMixin):
@@ -44,7 +45,7 @@ class InputLength(BaseEstimator, TransformerMixin, NoFitMixin):
         return np.array([len(obj) for obj in X], dtype=np.float64)[:, np.newaxis]
 
     def get_feature_names(self):
-        return ['len']
+        return ["len"]
 
 
 # compared to LabelEncoder from sklearn this one doesn't fail if it encounters unknown category
@@ -58,12 +59,12 @@ class CategoricalEncoder(TransformerMixin):
         self.categories_ = {value: idx for idx, value in enumerate(values)}
 
         self.values_ = values
-        self.values_.append('__unknown')
+        self.values_.append("__unknown")
         return self
 
     def _check_fitted(self):
         if self.categories_ is None:
-            raise ValueError('CategoricalEncoder was not fitted yet')
+            raise ValueError("CategoricalEncoder was not fitted yet")
 
     def transform(self, X):
         self._check_fitted()
@@ -78,7 +79,6 @@ class CategoricalEncoder(TransformerMixin):
 
 
 class ClassifierTransformer(TransformerMixin, NoFitMixin):
-
     def __init__(self, clf):
         self.clf = clf
 

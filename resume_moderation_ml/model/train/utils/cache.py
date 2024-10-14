@@ -1,9 +1,9 @@
 import functools
-from typing import Any, Callable, MutableMapping, Iterable, Optional, Type, TypeVar, Union, cast
+from typing import Any, Callable, Iterable, TypeVar, Union, cast
 
 from ml_tools.kardinal_tools.state import State
 
-T = TypeVar('T')  # Any type
+T = TypeVar("T")  # Any type
 MaybeIterable = Union[T, Iterable[T]]
 
 StorageKey = MaybeIterable[str]
@@ -12,7 +12,7 @@ StorageKey = MaybeIterable[str]
 class Cache:
     def __init__(self, state: State):
         self.state = state
-        
+
     def save(self, data: Any, key: StorageKey) -> None:
         self.state.cache_storage.save(data, key)
 

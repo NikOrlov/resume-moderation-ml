@@ -2,7 +2,6 @@ import numpy as np
 
 
 class ModerationTargets(object):
-
     def __init__(self):
         self.statuses = []
         self.validation_schema = []
@@ -19,11 +18,11 @@ class ModerationTargets(object):
 
     @property
     def approve_target(self):
-        return np.array([status == 'approved' for status in self.statuses], dtype=np.int32)
+        return np.array([status == "approved" for status in self.statuses], dtype=np.int32)
 
     @property
     def incompleted(self):
-        return np.array([schema == 'incomplete' for schema in self.validation_schema], dtype=np.int32)
+        return np.array([schema == "incomplete" for schema in self.validation_schema], dtype=np.int32)
 
     def get_flag_target(self, flag):
         return np.array([flag in self.flags[idx] for idx in range(len(self.flags))], dtype=float)
