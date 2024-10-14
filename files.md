@@ -1,5 +1,5 @@
 - (+) targets.py
-    определение класса  таргета - ModerationTargets
+    определение класса таргета - ModerationTargets
 - (+) source.py
   считываем выборку, разбиваем на две части (кэшируем результат - cache/resume_moderation_ml/model/train)
     main - для основной модели (raw_resumes - список словарей, targets - ModerationTargets)
@@ -20,7 +20,7 @@
 - (+ / -) dropsalary.py (отрефакторить @classifier.store())
   отдельная модель (XGBClassifier) - resume_moderation_ml/model/classifier/dropsalary/vectorizer.pickle
   data - {resumes: list, targets: ndarray, weights: ndarray} - cache/resume_moderation_ml/model/train/dropsalary/data.pickle
-  X = взяли сырые резюме + прогнали через векторайзер (taget == 1, у кого ЗП низкая)
+  X = взяли сырые резюме + прогнали через векторайзер (target == 1, у кого ЗП низкая)
   y, w
     сохранили в кэш (resume_moderation_ml/model/classifier/dropsalary) 
     classifier - {titles: list, targets: ndarray}
@@ -63,3 +63,12 @@
 
 - logger.py
 - xgb.py
+
+## Модели:
+- approve_complete
+- approve_incomplete
+- block
+- careless_key_skill_information
+- careless_additional_information
+- bad_function
+- bad_education

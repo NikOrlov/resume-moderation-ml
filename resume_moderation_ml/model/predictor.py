@@ -1,3 +1,4 @@
+import pickle
 from sklearn.pipeline import Pipeline
 from typing import Any, Mapping
 import xgboost as xgb
@@ -5,6 +6,13 @@ import xgboost as xgb
 
 TARGET_FLAGS = ['careless_key_skill_information', 'careless_additional_information',
                 'bad_function', 'bad_education']
+
+# DIR_PATH = "resume_moderation_ml/model/classifier"
+#
+#
+# def load_flag_model(model_name, dir_path=DIR_PATH):
+#     with open(f'{dir_path}/{model_name}.pickle', "rb") as input_file:
+#         return pickle.load(input_file, encoding="latin1")
 
 
 def xgb_set_single_thread(xgb_booster: xgb.Booster) -> None:
@@ -22,28 +30,24 @@ class ResumeFormatException(Exception):
 class ResumeModerationPredictor:
 
     def __init__(self, vectorizer,
-                 approve_incomplete,
-                 approve_complete,
-                 block,
+                 models,
+                 flag_models,
                  dropsalary_classifier,
                  dropsalary_vectorizer):
+
         self.vectorizer = vectorizer
-        self.approve_incomplete_model = approve_incomplete
+        self.approve_incomplete_model, self.approve_complete_model, self.block_model = models
         xgb_set_single_thread(self.approve_incomplete_model.delegate.booster_)
-
-        self.approve_complete_model = approve_complete
         xgb_set_single_thread(self.approve_complete_model.delegate.booster_)
-
-        self.block_model = storage.load('block') if 'block' in storage else None
-
         if self.block_model is not None:
             xgb_set_single_thread(self.block_model.booster_)
 
-        self.flags_models = [(flag, storage.load(flag)) for flag in TARGET_FLAGS]
-        for flag, model in self.flags_models:
+        self.flags_models = flag_models
+        for flag, model in self.flags_models.items():
             xgb_set_single_thread(model.booster_)
 
         xgb_set_single_thread(dropsalary_classifier.booster_)
+
         self.drop_salary = Pipeline([
             ('vectorizer', dropsalary_vectorizer),
             ('classifier', dropsalary_classifier)])

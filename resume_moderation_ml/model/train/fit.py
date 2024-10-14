@@ -29,11 +29,14 @@ def fit_model(task_name, resume_vectors, targets):
     threshold = select_threshold(precision, recall, thresholds, threshold_params)
 
     model.threshold = threshold
-
-    roc_auc = roc_auc_score(y_test, prediction)
-    prediction = (prediction >= threshold).astype(int)
-    logger.info('roc_auc is %.5f, chose threshold %.5f got precision %.5f and recall %.5f',
-                roc_auc, threshold, precision_score(y_test, prediction), recall_score(y_test, prediction))
+    try:
+        roc_auc = roc_auc_score(y_test, prediction)
+        prediction = (prediction >= threshold).astype(int)
+        logger.info('roc_auc is %.5f, chose threshold %.5f got precision %.5f and recall %.5f',
+                    roc_auc, threshold, precision_score(y_test, prediction), recall_score(y_test, prediction))
+    except Exception as e:
+        msg = f'{task_name} got error: {e}'
+        logger.error(msg)
     return model
 
 
