@@ -3,7 +3,7 @@ import argparse
 from sklearn.metrics import precision_recall_curve, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 
-from resume_moderation_ml.model import classifier
+from resume_moderation_ml.model.train import cache_obj, TASKS
 from resume_moderation_ml.model.train.config import resume_moderation_config
 from resume_moderation_ml.model.train.logger import setup_logger
 from resume_moderation_ml.model.train.model import create_model, get_model_parameters, get_task_subjects
@@ -12,6 +12,8 @@ from resume_moderation_ml.model.train.utils.stats import select_threshold
 from resume_moderation_ml.model.train.vectorize import get_resume_vectors
 
 logger = setup_logger(__name__)
+
+_MODELS_KEY = 'models'
 
 
 def fit_model(task_name, resume_vectors, targets):
@@ -52,26 +54,17 @@ def run_fitting(tasks):
 
     for task_name in tasks:
         model = fit_model(task_name, resume_vectors, targets)
-        classifier.save(model, task_name)
+        cache_obj.save(model, f"{_MODELS_KEY}/{task_name}")
 
 
 def read_tasks():
     parser = argparse.ArgumentParser(description="fit resume moderation models")
-    all_tasks = (
-        "approve_complete",
-        "approve_incomplete",
-        "block",
-        "careless_key_skill_information",
-        "careless_additional_information",
-        "bad_function",
-        "bad_education",
-    )
-    parser.add_argument("--task", choices=all_tasks, help="select model to fit")
+    parser.add_argument("--task", choices=TASKS, help="select model to fit")
     args = parser.parse_args()
     if args.task:
         return [args.task]
     else:
-        return all_tasks
+        return TASKS
 
 
 if __name__ == "__main__":

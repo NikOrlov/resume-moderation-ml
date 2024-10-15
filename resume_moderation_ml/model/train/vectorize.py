@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
-from resume_moderation_ml.model import classifier, text_fields
+from resume_moderation_ml.model import text_fields
 from resume_moderation_ml.model.resume import (
     POSSIBLE_PHONE_FIELDS_EXTRACTOR,
     FieldSizeQuotients,
@@ -40,11 +40,12 @@ from resume_moderation_ml.model.train.vocabulary import get_vocabularies
 
 logger = setup_logger(__name__)
 
-_RESUME_VECTORS_KEY = "resume_moderation_ml/model/train/resume_vectors"
-_FEATURE_NAMES_KEY = "resume_moderation_ml/model/train/feature_names"
+_RESUME_VECTORS_KEY = "vectorizer/resume_vectors"
+_FEATURE_NAMES_KEY = "vectorizer/feature_names"
+_VECTORIZER_NAMES_KEY = "vectorizer/vectorizer"
 
 
-@classifier.store("vectorizer")
+@cache.cache(_VECTORIZER_NAMES_KEY, cache_cls=cache_obj)
 def get_vectorizer_pipe():
     # start fitting vectorizer
     resumes = source.get_vectorizer_resumes()
@@ -281,5 +282,4 @@ def get_feature_names():
 
 
 if __name__ == "__main__":
-    # init_train_env()
     get_resume_vectors()

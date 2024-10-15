@@ -2,7 +2,7 @@ import copy
 
 import numpy as np
 
-from resume_moderation_ml.model.classifier import TARGET_FLAGS
+from resume_moderation_ml.model.train import TARGET_FLAGS
 from resume_moderation_ml.model.manual_rules import ManualRejectEstimator
 from resume_moderation_ml.model.train.config import resume_moderation_config
 from resume_moderation_ml.model.train.xgb import XGBClassifier

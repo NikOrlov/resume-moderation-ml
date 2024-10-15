@@ -17,8 +17,8 @@ from resume_moderation_ml.model.train.utils.transformers import JsonTextExtracto
 
 logger = setup_logger(__name__)
 
-_DATA_KEY = "resume_moderation_ml/model/train/bad_positions/data"
-_MODEL_KEY = "resume_moderation_ml/model/train/bad_positions/model"
+_DATA_KEY = "bad_positions/data"
+_MODEL_KEY = "bad_positions/classifier"
 
 
 def extract_moderator_name(resume):

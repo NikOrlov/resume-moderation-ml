@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.model_selection import KFold
 
-from resume_moderation_ml.model.classifier import TASKS
+from resume_moderation_ml.model.train import TASKS
 from resume_moderation_ml.model.train.config import resume_moderation_config
 from resume_moderation_ml.model.train.logger import setup_logger
 from resume_moderation_ml.model.train.model import create_model, get_task_subjects

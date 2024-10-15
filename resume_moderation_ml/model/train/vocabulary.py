@@ -8,6 +8,7 @@ from resume_moderation_ml.model.train.logger import setup_logger
 from resume_moderation_ml.model.train.utils.cache import cache
 
 logger = setup_logger(__name__)
+_VOCABULARY_KEY = "vocabulary"
 
 
 def _train_vectorizer(raw_resumes, field_name):
@@ -33,7 +34,7 @@ def get_vocabularies(field_names):
 
     for field_name in field_names:
 
-        @cache("resume_moderation_ml/model/vocabulary/" + field_name, cache_cls=cache_obj)
+        @cache(f"{_VOCABULARY_KEY}/{field_name}", cache_cls=cache_obj)
         def _train_single():
             return _train_vectorizer(raw_resumes, field_name).vocabulary_
 

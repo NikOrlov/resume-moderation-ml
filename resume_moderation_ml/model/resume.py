@@ -204,7 +204,8 @@ class SalaryExtractor(object):
             return 0.0
 
         salary = resume["salary"]
-        return float(self.currency_rates.get(salary["currency"], 1.0) * salary["amount"])
+        # return float(self.currency_rates.get(salary["currency"], 1.0) * salary["amount"])
+        return float(salary["amount"] / self.currency_rates.get(salary["currency"], 1.0))
 
 
 class SalaryDropFeaturesExtractor:

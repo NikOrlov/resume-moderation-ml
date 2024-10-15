@@ -28,12 +28,12 @@ _SOURCE_RESUME_CSV_FILES_FROM_HIVE = {
 
 _SOURCE_DELETED_RESUME_CSV_FILE_FROM_DB = "resume_moderation_ml/model/train/data/resume_deleted_from_db.csv"
 _RAW_RESUMES_KEYS = {
-    "main": "resume_moderation_ml/model/train/raw_resumes",
-    "vectorizer": "resume_moderation_ml/model/train/vectorizer_resumes",
+    "main": "train/main_resumes",
+    "vectorizer": "train/vectorizer_resumes",
 }
 _TARGETS_KEYS = {
-    "main": "resume_moderation_ml/model/train/targets",
-    "vectorizer": "resume_moderation_ml/model/train/vectorizer_targets",
+    "main": "train/main_targets",
+    "vectorizer": "train/vectorizer_targets",
 }
 
 

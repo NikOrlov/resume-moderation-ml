@@ -5,9 +5,8 @@ import numpy as np
 from hyperopt import STATUS_OK, Trials, fmin, tpe
 from sklearn.model_selection import KFold
 
-from resume_moderation_ml.model.classifier import TASKS
-from resume_moderation_ml.model.train import cache_obj
-from resume_moderation_ml.model.train.config import ModerationConfig
+from resume_moderation_ml.model.train import cache_obj, TASKS
+from resume_moderation_ml.model.train.config import resume_moderation_config
 from resume_moderation_ml.model.train.evaluate import cross_validate_model
 from resume_moderation_ml.model.train.logger import setup_logger
 from resume_moderation_ml.model.train.model import get_task_subjects
@@ -15,8 +14,6 @@ from resume_moderation_ml.model.train.source import get_targets
 from resume_moderation_ml.model.train.vectorize import get_resume_vectors
 
 logger = setup_logger(__name__)
-
-config = ModerationConfig()
 
 
 def serialize_params(xgb_params):
@@ -55,10 +52,10 @@ def optimize_xgb_params(task_name, X, y, param_space, max_evals=10, n_folds=5, r
 
 def run_params_optimization():
     optimization_config = {
-        "param_space": config.hp_param_space,
-        "max_evals": config.hp_max_evals,
-        "n_folds": config.cv_number_of_folds,
-        "random_state": config.cv_seed,
+        "param_space": resume_moderation_config.hp_param_space,
+        "max_evals": resume_moderation_config.hp_max_evals,
+        "n_folds": resume_moderation_config.cv_number_of_folds,
+        "random_state": resume_moderation_config.cv_seed,
     }
 
     resume_vectors = get_resume_vectors()

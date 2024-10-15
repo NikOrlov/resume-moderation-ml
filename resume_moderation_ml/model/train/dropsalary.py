@@ -6,7 +6,6 @@ import numpy as np
 from sklearn.metrics import precision_recall_curve, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 
-from resume_moderation_ml.model import classifier
 from resume_moderation_ml.model.resume import SalaryDropFeaturesExtractor
 from resume_moderation_ml.model.train import cache_obj
 from resume_moderation_ml.model.train.config import resume_moderation_config
@@ -19,8 +18,10 @@ from resume_moderation_ml.model.train.xgb import XGBClassifier
 
 logger = setup_logger(__name__)
 logger.setLevel(level=logging.DEBUG)
-_DATA_KEY = "resume_moderation_ml/model/train/dropsalary/data"
-_RESUME_VECTORS_KEY = "resume_moderation_ml/model/train/dropsalary/resume_vectors"
+_DATA_KEY = "dropsalary/data"
+_RESUME_VECTORS_KEY = "dropsalary/resume_vectors"
+_VECTORIZER_KEY = "dropsalary/vectorizer"
+_CLASSIFIER_KEY = "dropsalary/classifier"
 
 
 def load_currency_rates() -> dict:
@@ -77,7 +78,7 @@ def get_targets_and_weights():
     return raw_data["targets"], raw_data["weights"]
 
 
-@classifier.store("dropsalary/vectorizer")
+@cache.cache(_VECTORIZER_KEY, cache_cls=cache_obj)
 def get_vectorizer():
     return ValueExtractor(SalaryDropFeaturesExtractor(load_currency_rates()))
 
@@ -92,7 +93,7 @@ def get_resume_vectors():
     return resume_vectors
 
 
-@classifier.store("dropsalary/classifier")
+@cache.cache(_CLASSIFIER_KEY, cache_cls=cache_obj)
 def fit_model():
     logger.info("fit drop salary model")
     X = get_resume_vectors()
@@ -132,5 +133,4 @@ def fit_model():
 
 
 if __name__ == "__main__":
-    # init_train_env()
     fit_model()

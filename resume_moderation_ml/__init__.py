@@ -8,12 +8,11 @@ from resume_moderation_ml.model.train.utils import alpha_quotient, caps_quotient
 from resume_moderation_ml.pages.resume_moderation_block_page import ResumeModerationBlockPage
 from resume_moderation_ml.pages.resume_moderation_page import ResumeModerationPage
 
-DIR_PATH = "resume_moderation_ml/model/classifier"
 
-
-def load_model(name, dir_name=DIR_PATH):
-    with open(f"{dir_name}/{name}.pickle", "rb") as file:
-        return pickle.load(file)
+def load_model(name, dir_name):
+    return joblib.load(f"{dir_name}/{name}.pickle")
+    # with open(f"{dir_name}/{name}.pickle", "rb") as file:
+    #     return pickle.load(file)
 
 
 class Application(MLBackApplication):
@@ -29,15 +28,15 @@ class Application(MLBackApplication):
         self.flag_models = {}
 
         for model_name in models:
-            self.models[model_name] = load_model(model_name)
+            self.models[model_name] = load_model(model_name, "cache/models")
         for model_name in flag_models:
-            self.flag_models[model_name] = load_model(model_name)
+            self.flag_models[model_name] = load_model(model_name, "cache/models")
 
         self.dropsalary = {
-            "classifier": load_model("dropsalary/classifier"),
-            "vectorizer": load_model("dropsalary/vectorizer"),
+            "classifier": load_model("classifier", "cache/dropsalary"),
+            "vectorizer": load_model("vectorizer", "cache/dropsalary"),
         }
-        self.vectorizer = joblib.load("resume_moderation_ml/model/classifier/vectorizer.pickle", mmap_mode="r")
+        self.vectorizer = load_model("vectorizer", "cache/vectorizer")
 
         predictor = ResumeModerationPredictor(
             vectorizer=self.vectorizer,
