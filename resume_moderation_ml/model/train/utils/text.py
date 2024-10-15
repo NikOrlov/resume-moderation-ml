@@ -8,6 +8,11 @@ from sklearn.feature_extraction.text import strip_accents_unicode
 from resume_moderation_ml.model.train.utils.transformers import NoFitMixin
 
 
+_STEMMERS_CHAIN = [SnowballStemmer("russian"), PorterStemmer()]
+_TOKENIZER_PATTERN = re.compile(r"(?u)\b\w\w+\b")
+_STEMMING_CACHE = {}
+
+
 class OutOfVocabularyTokens(BaseEstimator, TransformerMixin, NoFitMixin):
     def __init__(self, vocabulary, stop_words=None):
         self.vocabulary = set(vocabulary)
@@ -55,13 +60,6 @@ class TokenLengthStatistics(BaseEstimator, TransformerMixin, NoFitMixin):
 
     def get_feature_names(self):
         return ["perc_{:.1f}".format(perc) for perc in self.percentiles] + ["mean", "std"]
-
-
-_STEMMERS_CHAIN = [SnowballStemmer("russian"), PorterStemmer()]
-_TOKENIZER_PATTERN = re.compile(r"(?u)\b\w\w+\b")
-
-
-_STEMMING_CACHE = {}
 
 
 def _stem(word):

@@ -5,7 +5,6 @@ from ml_tools.kardinal_tools.state import State
 
 T = TypeVar("T")  # Any type
 MaybeIterable = Union[T, Iterable[T]]
-
 StorageKey = MaybeIterable[str]
 
 

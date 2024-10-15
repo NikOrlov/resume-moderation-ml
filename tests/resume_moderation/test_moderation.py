@@ -14,7 +14,6 @@ class Test(FrontikTestBase):
 
     async def test_moderation_block(self, frontik_app: Application) -> None:
         response = await self.fetch_json(**build_moderation_request(path="/moderation/resume/block"))
-        print(response)
         response_model = BlockResponse(**response)
 
         assert not response_model.block

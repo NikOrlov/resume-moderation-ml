@@ -66,11 +66,10 @@ def run_params_optimization():
         X, y = get_task_subjects(task_name, resume_vectors, targets)
         trials, best_params = optimize_xgb_params(task_name, X, y, **optimization_config)
 
-        output_path = os.path.join("resume_moderation_ml/model/hp", task_name)
+        output_path = os.path.join("hp", task_name)
         cache_obj.save(trials, os.path.join(output_path, "trials"))
         cache_obj.save(best_params, os.path.join(output_path, "best"))
 
 
 if __name__ == "__main__":
-    # init_train_env()
     run_params_optimization()
